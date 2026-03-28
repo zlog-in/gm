@@ -1,5 +1,7 @@
 # GM (Generate Mnemonic)
 
+**Demo**: [gm.zlog.in](https://gm.zlog.in) | **Source**: [github.com/zlog-in/gm](https://github.com/zlog-in/gm)
+
 Deterministic BIP39 mnemonic generator. Turn memorable input into a standard mnemonic phrase — reproducible forever, stored nowhere.
 
 **Use your life to define randomness.** Your seed comes from three dimensions you choose:
@@ -27,7 +29,7 @@ Same input, same iterations, same output — on any device, any browser, any tim
 ## Usage
 
 ```bash
-git clone https://github.com/anthropics/gm.git
+git clone https://github.com/zlog-in/gm.git
 cd gm
 open index.html        # macOS
 # or: xdg-open index.html   (Linux)
