@@ -209,6 +209,36 @@ textarea::placeholder {
   color: #3c3528;
 }
 
+.iter-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.iter-custom-input {
+  width: 100px;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.82rem;
+  font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+  background: rgba(255,255,255,0.65);
+  border: 1px solid #d5cfc3;
+  border-radius: 4px;
+  color: #3c3528;
+  transition: border-color 0.2s;
+  -moz-appearance: textfield;
+}
+.iter-custom-input::-webkit-outer-spin-button,
+.iter-custom-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.iter-custom-input:focus {
+  outline: none;
+  border-color: #b8ad96;
+}
+.iter-custom-input::placeholder {
+  color: #bbb5a6;
+}
+
 .info-text {
   font-size: 0.72rem;
   color: #b5aa96;
@@ -371,6 +401,99 @@ textarea::placeholder {
   color: #a09580;
   margin-top: 0.5rem;
 }
+
+/* --- Wordlist Panel --- */
+.wordlist-panel {
+  margin-top: 2.5rem;
+  border-top: 1px solid #ddd6c8;
+  padding-top: 1.5rem;
+}
+.wordlist-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 0;
+  transition: margin-bottom 0.3s;
+}
+.wordlist-header.open {
+  margin-bottom: 1rem;
+}
+.wordlist-header .label {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: #8a7e6b;
+}
+.wordlist-header .toggle {
+  font-size: 0.7rem;
+  color: #b5aa96;
+  transition: transform 0.3s;
+  display: inline-block;
+}
+.wordlist-header.open .toggle {
+  transform: rotate(90deg);
+}
+.wordlist-body {
+  display: none;
+  max-height: 420px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #d5cfc3 transparent;
+}
+.wordlist-body::-webkit-scrollbar {
+  width: 5px;
+}
+.wordlist-body::-webkit-scrollbar-thumb {
+  background: #d5cfc3;
+  border-radius: 3px;
+}
+.wordlist-body.open {
+  display: block;
+}
+.wordlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 2px;
+}
+.wl-word {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  padding: 3px 6px;
+  border-radius: 3px;
+  font-size: 0.72rem;
+  line-height: 1.6;
+  transition: all 0.2s;
+}
+.wl-word .wl-idx {
+  color: #ccc5b5;
+  font-size: 0.6rem;
+  min-width: 2rem;
+  text-align: right;
+  font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+}
+.wl-word .wl-txt {
+  color: #999080;
+}
+.wl-word.highlighted {
+  background: rgba(140,100,40,0.1);
+  border-radius: 3px;
+}
+.wl-word.highlighted .wl-idx {
+  color: #8a6828;
+  font-weight: 600;
+}
+.wl-word.highlighted .wl-txt {
+  color: #3c3020;
+  font-weight: 600;
+}
+.wordlist-stats {
+  font-size: 0.65rem;
+  color: #b5aa96;
+  margin-top: 0.6rem;
+  text-align: right;
+}
 </style>
 </head>
 <body>
@@ -419,8 +542,26 @@ textarea::placeholder {
           <label class="radio-btn" for="langJa">日本語</label>
         </div>
       </div>
+      <div class="option-group">
+        <label>Iterations</label>
+        <div class="iter-row">
+          <div class="radio-group">
+            <input type="radio" name="iterations" id="iter100k" value="100000">
+            <label class="radio-btn" for="iter100k">100K</label>
+            <input type="radio" name="iterations" id="iter500k" value="500000">
+            <label class="radio-btn" for="iter500k">500K</label>
+            <input type="radio" name="iterations" id="iter1m" value="1000000" checked>
+            <label class="radio-btn" for="iter1m">1M</label>
+            <input type="radio" name="iterations" id="iter5m" value="5000000">
+            <label class="radio-btn" for="iter5m">5M</label>
+            <input type="radio" name="iterations" id="iterCustom" value="custom">
+            <label class="radio-btn" for="iterCustom">...</label>
+          </div>
+          <input type="number" id="iterCustomInput" class="iter-custom-input" min="1" max="100000000" placeholder="custom" style="display:none">
+        </div>
+      </div>
     </div>
-    <div class="info-text">PBKDF2-SHA256 &middot; 1,000,000 iterations &middot; no salt</div>
+    <div class="info-text">PBKDF2-SHA256 &middot; no salt</div>
   </div>
 
   <!-- Generate -->
@@ -452,6 +593,18 @@ textarea::placeholder {
       Keep your input material safe — anyone with it can regenerate your keys.
     </div>
   </div>
+
+  <!-- Wordlist Reference -->
+  <div class="wordlist-panel">
+    <div class="wordlist-header" id="wordlistHeader">
+      <span class="label">BIP39 Wordlist Reference</span>
+      <span class="toggle">&#9654;</span>
+    </div>
+    <div class="wordlist-body" id="wordlistBody">
+      <div class="wordlist-grid" id="wordlistGrid"></div>
+      <div class="wordlist-stats" id="wordlistStats"></div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -480,6 +633,100 @@ const copyHex = document.getElementById("copyHex");
 const clearBtn = document.getElementById("clearBtn");
 
 let fileBuffer = null;
+let highlightedIndices = new Set();
+
+// --- Wordlist panel ---
+const wordlistHeader = document.getElementById("wordlistHeader");
+const wordlistBody = document.getElementById("wordlistBody");
+const wordlistGrid = document.getElementById("wordlistGrid");
+const wordlistStats = document.getElementById("wordlistStats");
+
+const langNames = { en: "English", zh: "Chinese Simplified", ja: "Japanese" };
+
+function getSelectedLang() {
+  return document.querySelector('input[name="lang"]:checked').value;
+}
+
+function renderWordlist() {
+  const lang = getSelectedLang();
+  const words = WORDLISTS[lang];
+  wordlistGrid.innerHTML = "";
+  words.forEach((w, i) => {
+    const div = document.createElement("div");
+    div.className = "wl-word" + (highlightedIndices.has(i) ? " highlighted" : "");
+    div.dataset.index = i;
+    div.innerHTML = `<span class="wl-idx">${i}</span><span class="wl-txt">${w}</span>`;
+    wordlistGrid.appendChild(div);
+  });
+  wordlistStats.textContent = `${langNames[lang]} — ${words.length} words`;
+}
+
+function updateHighlights(indices) {
+  highlightedIndices = new Set(indices);
+  const items = wordlistGrid.querySelectorAll(".wl-word");
+  items.forEach(el => {
+    const idx = parseInt(el.dataset.index);
+    if (highlightedIndices.has(idx)) {
+      el.classList.add("highlighted");
+    } else {
+      el.classList.remove("highlighted");
+    }
+  });
+  // Scroll first highlighted into view
+  if (indices.length > 0 && wordlistBody.classList.contains("open")) {
+    const first = wordlistGrid.querySelector(".wl-word.highlighted");
+    if (first) first.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+}
+
+function clearHighlights() {
+  highlightedIndices = new Set();
+  wordlistGrid.querySelectorAll(".wl-word.highlighted").forEach(el => {
+    el.classList.remove("highlighted");
+  });
+}
+
+wordlistHeader.addEventListener("click", () => {
+  wordlistHeader.classList.toggle("open");
+  wordlistBody.classList.toggle("open");
+  if (wordlistBody.classList.contains("open") && wordlistGrid.children.length === 0) {
+    renderWordlist();
+  }
+});
+
+// Re-render wordlist when language changes
+document.querySelectorAll('input[name="lang"]').forEach(radio => {
+  radio.addEventListener("change", () => {
+    if (wordlistBody.classList.contains("open")) {
+      renderWordlist();
+    } else {
+      wordlistGrid.innerHTML = "";
+    }
+  });
+});
+
+// Initial render if already open (won't be, but safe)
+renderWordlist();
+
+// --- Iterations custom input ---
+const iterCustomRadio = document.getElementById("iterCustom");
+const iterCustomInput = document.getElementById("iterCustomInput");
+
+document.querySelectorAll('input[name="iterations"]').forEach(radio => {
+  radio.addEventListener("change", () => {
+    iterCustomInput.style.display = radio.value === "custom" && radio.checked ? "" : "none";
+    if (radio.value === "custom" && radio.checked) iterCustomInput.focus();
+  });
+});
+
+function getIterations() {
+  const selected = document.querySelector('input[name="iterations"]:checked').value;
+  if (selected === "custom") {
+    const v = parseInt(iterCustomInput.value);
+    return (v && v > 0) ? v : 0;
+  }
+  return parseInt(selected);
+}
 
 // --- File handling ---
 fileInput.addEventListener("change", handleFile);
@@ -542,13 +789,19 @@ generateBtn.addEventListener("click", async () => {
 
   const wordCount = parseInt(document.querySelector('input[name="wordCount"]:checked').value);
   const lang = document.querySelector('input[name="lang"]:checked').value;
+  const iterations = getIterations();
+  if (!iterations || iterations < 1) {
+    progressText.textContent = "Please enter a valid iteration count.";
+    return;
+  }
   const entropyBits = wordCount === 12 ? 128 : 256;
   const entropyBytes = entropyBits / 8;
 
   generateBtn.disabled = true;
   generateBtn.classList.add("running");
   result.classList.remove("visible");
-  progressText.textContent = "Deriving key (1,000,000 iterations)...";
+  const iterLabel = iterations >= 1000000 ? (iterations / 1000000) + "M" : iterations >= 1000 ? (iterations / 1000) + "K" : iterations;
+  progressText.textContent = `Deriving key (${iterLabel} iterations)...`;
 
   // Use setTimeout to let UI update
   await new Promise(r => setTimeout(r, 50));
@@ -564,7 +817,7 @@ generateBtn.addEventListener("click", async () => {
         name: "PBKDF2",
         hash: "SHA-256",
         salt: new Uint8Array(0),
-        iterations: 1000000
+        iterations: iterations
       },
       keyMaterial,
       entropyBits
@@ -590,17 +843,15 @@ generateBtn.addEventListener("click", async () => {
     // Split into 11-bit groups and map to words
     const wordlist = WORDLISTS[lang];
     const words = [];
+    const wordIndices = [];
     for (let i = 0; i < bits.length; i += 11) {
       const index = parseInt(bits.slice(i, i + 11), 2);
+      wordIndices.push(index);
       words.push(wordlist[index]);
     }
 
     // Hex display
     const hexStr = Array.from(entropy).map(b => b.toString(16).padStart(2, "0")).join("");
-
-    // For 24 words, checksum is 8 bits = full first byte of hash
-    // For 12 words, checksum is 4 bits = first nibble
-    // Show both entropy hex and checksum
     hexDisplay.textContent = hexStr;
 
     // Display mnemonic
@@ -614,6 +865,15 @@ generateBtn.addEventListener("click", async () => {
 
     result.classList.add("visible");
     progressText.textContent = "";
+
+    // Highlight selected words in wordlist panel
+    if (wordlistGrid.children.length === 0) renderWordlist();
+    updateHighlights(wordIndices);
+    // Auto-open the wordlist panel
+    if (!wordlistBody.classList.contains("open")) {
+      wordlistHeader.classList.add("open");
+      wordlistBody.classList.add("open");
+    }
 
   } catch (err) {
     progressText.textContent = "Error: " + err.message;
@@ -644,6 +904,7 @@ clearBtn.addEventListener("click", () => {
   result.classList.remove("visible");
   mnemonicGrid.innerHTML = "";
   hexDisplay.textContent = "";
+  clearHighlights();
 });
 
 // === Self-verification on load ===
