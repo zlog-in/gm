@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GM — Mnemonic Generator</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23f5f0e8'/%3E%3Cpath d='M32 4 A28 28 0 1 1 31.9 4' fill='none' stroke='%232c2416' stroke-width='3.5' stroke-linecap='round' stroke-dasharray='160 20' opacity='0.8'/%3E%3Ctext x='32' y='40' text-anchor='middle' font-family='serif' font-size='28' font-weight='700' fill='%232c2416'%3E%E5%A2%A8%3C/text%3E%3C/svg%3E">
+<title>归墨 GM — Mnemonic Generator</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -225,10 +226,12 @@ textarea::placeholder {
   color: #3c3528;
   transition: border-color 0.2s;
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 .iter-custom-input::-webkit-outer-spin-button,
 .iter-custom-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
+  appearance: none;
   margin: 0;
 }
 .iter-custom-input:focus {
@@ -494,36 +497,74 @@ textarea::placeholder {
   margin-top: 0.6rem;
   text-align: right;
 }
+
+.disclaimer {
+  margin-top: 2rem;
+  padding: 1rem 1.1rem;
+  border-radius: 4px;
+  background: rgba(180,60,60,0.06);
+  border: 1px solid #d4b8b0;
+  font-size: 0.72rem;
+  color: #8a6055;
+  line-height: 1.65;
+}
+.disclaimer strong {
+  color: #7a4040;
+}
+
+.ui-lang-toggle {
+  position: fixed;
+  top: 1.2rem;
+  right: 1.5rem;
+  z-index: 10;
+  font-size: 0.72rem;
+  color: #b5aa96;
+  cursor: pointer;
+  padding: 4px 10px;
+  border: 1px solid #d5cfc3;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.5);
+  font-family: inherit;
+  transition: all 0.2s;
+  letter-spacing: 0.03em;
+}
+.ui-lang-toggle:hover {
+  color: #6b5e4a;
+  border-color: #b8ad96;
+  background: rgba(255,255,255,0.75);
+}
 </style>
 </head>
 <body>
+<button class="ui-lang-toggle" id="uiLangToggle">中文</button>
+
 <div class="container">
-  <h1>G M</h1>
-  <p class="subtitle">Deterministic BIP39 Mnemonic from Your Data</p>
+  <h1 data-i18n="title">G M</h1>
+  <p class="subtitle" data-i18n="subtitle">Deterministic BIP39 Mnemonic from Your Data</p>
 
   <!-- Step 1: Input -->
   <div class="step">
-    <div class="step-label">Input Material</div>
-    <textarea id="textInput" placeholder="Write anything here, any language..."></textarea>
+    <div class="step-label" data-i18n="inputMaterial">Input Material</div>
+    <textarea id="textInput" data-i18n-placeholder="textPlaceholder" placeholder="Write anything here, any language..."></textarea>
     <div style="height: 0.8rem"></div>
     <div class="file-drop" id="fileDrop">
       <input type="file" id="fileInput" />
       <div class="icon" style="font-style: normal">&#9651;</div>
-      <div class="text">Drop a file or click to select</div>
+      <div class="text" data-i18n="fileDrop">Drop a file or click to select</div>
     </div>
     <div class="file-info" id="fileInfo" style="display:none">
       <span id="fileName"></span>
       <span id="fileSize"></span>
-      <span class="remove" id="fileRemove">&#10005; remove</span>
+      <span class="remove" id="fileRemove" data-i18n="fileRemove">&#10005; remove</span>
     </div>
   </div>
 
   <!-- Step 2: Options -->
   <div class="step">
-    <div class="step-label">Parameters</div>
+    <div class="step-label" data-i18n="parameters">Parameters</div>
     <div class="options">
       <div class="option-group">
-        <label>Words</label>
+        <label data-i18n="words">Words</label>
         <div class="radio-group">
           <input type="radio" name="wordCount" id="w12" value="12" checked>
           <label class="radio-btn" for="w12">12</label>
@@ -532,7 +573,7 @@ textarea::placeholder {
         </div>
       </div>
       <div class="option-group">
-        <label>Language</label>
+        <label data-i18n="wordlistLang">Language</label>
         <div class="radio-group">
           <input type="radio" name="lang" id="langEn" value="en" checked>
           <label class="radio-btn" for="langEn">English</label>
@@ -543,7 +584,7 @@ textarea::placeholder {
         </div>
       </div>
       <div class="option-group">
-        <label>Iterations</label>
+        <label data-i18n="iterations">Iterations</label>
         <div class="iter-row">
           <div class="radio-group">
             <input type="radio" name="iterations" id="iter100k" value="100000">
@@ -557,16 +598,16 @@ textarea::placeholder {
             <input type="radio" name="iterations" id="iterCustom" value="custom">
             <label class="radio-btn" for="iterCustom">...</label>
           </div>
-          <input type="number" id="iterCustomInput" class="iter-custom-input" min="1" max="100000000" placeholder="custom" style="display:none">
+          <input type="number" id="iterCustomInput" class="iter-custom-input" min="1" max="100000000" data-i18n-placeholder="customPlaceholder" placeholder="custom" style="display:none">
         </div>
       </div>
     </div>
-    <div class="info-text">PBKDF2-SHA256 &middot; no salt</div>
+    <div class="info-text" data-i18n="infoText">PBKDF2-SHA256 &middot; no salt</div>
   </div>
 
   <!-- Generate -->
   <div class="step">
-    <button class="generate-btn" id="generateBtn">Generate Mnemonic</button>
+    <button class="generate-btn" id="generateBtn" data-i18n="generate">Generate Mnemonic</button>
     <div class="progress-text" id="progressText"></div>
   </div>
 
@@ -574,20 +615,20 @@ textarea::placeholder {
   <div class="result" id="result">
     <div class="result-section">
       <div class="result-label">
-        <span>Mnemonic</span>
-        <button class="copy-btn" id="copyMnemonic">copy</button>
+        <span data-i18n="mnemonic">Mnemonic</span>
+        <button class="copy-btn" id="copyMnemonic" data-i18n="copy">copy</button>
       </div>
       <div class="mnemonic-grid" id="mnemonicGrid"></div>
     </div>
     <div class="result-section">
       <div class="result-label">
-        <span>Raw Entropy (hex)</span>
-        <button class="copy-btn" id="copyHex">copy</button>
+        <span data-i18n="rawHex">Raw Entropy (hex)</span>
+        <button class="copy-btn" id="copyHex" data-i18n="copy">copy</button>
       </div>
       <div class="hex-display" id="hexDisplay"></div>
     </div>
-    <button class="clear-btn" id="clearBtn">Clear Results</button>
-    <div class="warning">
+    <button class="clear-btn" id="clearBtn" data-i18n="clear">Clear Results</button>
+    <div class="warning" data-i18n-html="warning">
       This tool runs entirely in your browser — no data is sent anywhere.<br>
       The same input will always produce the same mnemonic.<br>
       Keep your input material safe — anyone with it can regenerate your keys.
@@ -597,7 +638,7 @@ textarea::placeholder {
   <!-- Wordlist Reference -->
   <div class="wordlist-panel">
     <div class="wordlist-header" id="wordlistHeader">
-      <span class="label">BIP39 Wordlist Reference</span>
+      <span class="label" data-i18n="wordlistRef">BIP39 Wordlist Reference</span>
       <span class="toggle">&#9654;</span>
     </div>
     <div class="wordlist-body" id="wordlistBody">
@@ -605,9 +646,101 @@ textarea::placeholder {
       <div class="wordlist-stats" id="wordlistStats"></div>
     </div>
   </div>
+
+  <div class="disclaimer" data-i18n-html="disclaimer">
+    <strong>Disclaimer</strong>: This tool is experimental and provided as-is for research and educational purposes only. It has not been independently audited. Do not use it to secure assets you cannot afford to lose. The authors assume no responsibility for any loss resulting from the use of this tool.
+  </div>
 </div>
 
 <script>
+// === UI Internationalization ===
+const I18N = {
+  en: {
+    title: "G M",
+    subtitle: "Deterministic BIP39 Mnemonic from Your Data",
+    inputMaterial: "Input Material",
+    textPlaceholder: "Write anything here, any language...",
+    fileDrop: "Drop a file or click to select",
+    fileRemove: "✕ remove",
+    parameters: "Parameters",
+    words: "Words",
+    wordlistLang: "Language",
+    iterations: "Iterations",
+    customPlaceholder: "custom",
+    infoText: "PBKDF2-SHA256 · no salt",
+    generate: "Generate Mnemonic",
+    mnemonic: "Mnemonic",
+    rawHex: "Raw Entropy (hex)",
+    copy: "copy",
+    copied: "copied!",
+    clear: "Clear Results",
+    warning: "This tool runs entirely in your browser — no data is sent anywhere.<br>The same input will always produce the same mnemonic.<br>Keep your input material safe — anyone with it can regenerate your keys.",
+    wordlistRef: "BIP39 Wordlist Reference",
+    noInput: "Please provide text or a file.",
+    badIter: "Please enter a valid iteration count.",
+    deriving: "Deriving key ({iter} iterations)...",
+    disclaimer: "<strong>Disclaimer</strong>: This tool is experimental and provided as-is for research and educational purposes only. It has not been independently audited. Do not use it to secure assets you cannot afford to lose. The authors assume no responsibility for any loss resulting from the use of this tool.",
+    toggleLang: "中文"
+  },
+  zh: {
+    title: "归墨",
+    subtitle: "从你的记忆生成 BIP39 助记词",
+    inputMaterial: "输入素材",
+    textPlaceholder: "在此输入任何文字，任何语言……",
+    fileDrop: "拖入文件或点击选择",
+    fileRemove: "✕ 移除",
+    parameters: "参数设置",
+    words: "词数",
+    wordlistLang: "词表语言",
+    iterations: "迭代轮数",
+    customPlaceholder: "自定义",
+    infoText: "PBKDF2-SHA256 · 无盐值",
+    generate: "生成助记词",
+    mnemonic: "助记词",
+    rawHex: "原始熵 (hex)",
+    copy: "复制",
+    copied: "已复制",
+    clear: "清除结果",
+    warning: "此工具完全在浏览器本地运行，不发送任何数据。<br>相同的输入永远产出相同的助记词。<br>请妥善保管你的输入素材——任何拥有它的人都可以重新生成你的密钥。",
+    wordlistRef: "BIP39 词表参考",
+    noInput: "请提供文字或文件。",
+    badIter: "请输入有效的迭代轮数。",
+    deriving: "正在派生密钥（{iter} 轮迭代）……",
+    disclaimer: "<strong>免责声明</strong>：本工具为实验性项目，仅供研究和学习用途，按原样提供，未经独立安全审计。请勿将其用于保护您无法承受损失的资产。作者不对因使用本工具而导致的任何损失承担责任。",
+    toggleLang: "EN"
+  }
+};
+
+let uiLang = "en";
+
+function applyI18N() {
+  const t = I18N[uiLang];
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.dataset.i18n;
+    if (t[key] !== undefined) el.textContent = t[key];
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (t[key] !== undefined) el.placeholder = t[key];
+  });
+  document.querySelectorAll("[data-i18n-html]").forEach(el => {
+    const key = el.dataset.i18nHtml;
+    if (t[key] !== undefined) el.innerHTML = t[key];
+  });
+  document.getElementById("uiLangToggle").textContent = t.toggleLang;
+}
+
+function t(key, vars) {
+  let s = I18N[uiLang][key] || I18N.en[key] || key;
+  if (vars) Object.entries(vars).forEach(([k, v]) => { s = s.replace(`{${k}}`, v); });
+  return s;
+}
+
+document.getElementById("uiLangToggle").addEventListener("click", () => {
+  uiLang = uiLang === "en" ? "zh" : "en";
+  applyI18N();
+});
+
 // BIP39 Wordlists
 const WORDLISTS = {
   en: "abandon ability able about above absent absorb abstract absurd abuse access accident account accuse achieve acid acoustic acquire across act action actor actress actual adapt add addict address adjust admit adult advance advice aerobic affair afford afraid again age agent agree ahead aim air airport aisle alarm album alcohol alert alien all alley allow almost alone alpha already also alter always amateur amazing among amount amused analyst anchor ancient anger angle angry animal ankle announce annual another answer antenna antique anxiety any apart apology appear apple approve april arch arctic area arena argue arm armed armor army around arrange arrest arrive arrow art artefact artist artwork ask aspect assault asset assist assume asthma athlete atom attack attend attitude attract auction audit august aunt author auto autumn average avocado avoid awake aware away awesome awful awkward axis baby bachelor bacon badge bag balance balcony ball bamboo banana banner bar barely bargain barrel base basic basket battle beach bean beauty because become beef before begin behave behind believe below belt bench benefit best betray better between beyond bicycle bid bike bind biology bird birth bitter black blade blame blanket blast bleak bless blind blood blossom blouse blue blur blush board boat body boil bomb bone bonus book boost border boring borrow boss bottom bounce box boy bracket brain brand brass brave bread breeze brick bridge brief bright bring brisk broccoli broken bronze broom brother brown brush bubble buddy budget buffalo build bulb bulk bullet bundle bunker burden burger burst bus business busy butter buyer buzz cabbage cabin cable cactus cage cake call calm camera camp can canal cancel candy cannon canoe canvas canyon capable capital captain car carbon card cargo carpet carry cart case cash casino castle casual cat catalog catch category cattle caught cause caution cave ceiling celery cement census century cereal certain chair chalk champion change chaos chapter charge chase chat cheap check cheese chef cherry chest chicken chief child chimney choice choose chronic chuckle chunk churn cigar cinnamon circle citizen city civil claim clap clarify claw clay clean clerk clever click client cliff climb clinic clip clock clog close cloth cloud clown club clump cluster clutch coach coast coconut code coffee coil coin collect color column combine come comfort comic common company concert conduct confirm congress connect consider control convince cook cool copper copy coral core corn correct cost cotton couch country couple course cousin cover coyote crack cradle craft cram crane crash crater crawl crazy cream credit creek crew cricket crime crisp critic crop cross crouch crowd crucial cruel cruise crumble crunch crush cry crystal cube culture cup cupboard curious current curtain curve cushion custom cute cycle dad damage damp dance danger daring dash daughter dawn day deal debate debris decade december decide decline decorate decrease deer defense define defy degree delay deliver demand demise denial dentist deny depart depend deposit depth deputy derive describe desert design desk despair destroy detail detect develop device devote diagram dial diamond diary dice diesel diet differ digital dignity dilemma dinner dinosaur direct dirt disagree discover disease dish dismiss disorder display distance divert divide divorce dizzy doctor document dog doll dolphin domain donate donkey donor door dose double dove draft dragon drama drastic draw dream dress drift drill drink drip drive drop drum dry duck dumb dune during dust dutch duty dwarf dynamic eager eagle early earn earth easily east easy echo ecology economy edge edit educate effort egg eight either elbow elder electric elegant element elephant elevator elite else embark embody embrace emerge emotion employ empower empty enable enact end endless endorse enemy energy enforce engage engine enhance enjoy enlist enough enrich enroll ensure enter entire entry envelope episode equal equip era erase erode erosion error erupt escape essay essence estate eternal ethics evidence evil evoke evolve exact example excess exchange excite exclude excuse execute exercise exhaust exhibit exile exist exit exotic expand expect expire explain expose express extend extra eye eyebrow fabric face faculty fade faint faith fall false fame family famous fan fancy fantasy farm fashion fat fatal father fatigue fault favorite feature february federal fee feed feel female fence festival fetch fever few fiber fiction field figure file film filter final find fine finger finish fire firm first fiscal fish fit fitness fix flag flame flash flat flavor flee flight flip float flock floor flower fluid flush fly foam focus fog foil fold follow food foot force forest forget fork fortune forum forward fossil foster found fox fragile frame frequent fresh friend fringe frog front frost frown frozen fruit fuel fun funny furnace fury future gadget gain galaxy gallery game gap garage garbage garden garlic garment gas gasp gate gather gauge gaze general genius genre gentle genuine gesture ghost giant gift giggle ginger giraffe girl give glad glance glare glass glide glimpse globe gloom glory glove glow glue goat goddess gold good goose gorilla gospel gossip govern gown grab grace grain grant grape grass gravity great green grid grief grit grocery group grow grunt guard guess guide guilt guitar gun gym habit hair half hammer hamster hand happy harbor hard harsh harvest hat have hawk hazard head health heart heavy hedgehog height hello helmet help hen hero hidden high hill hint hip hire history hobby hockey hold hole holiday hollow home honey hood hope horn horror horse hospital host hotel hour hover hub huge human humble humor hundred hungry hunt hurdle hurry hurt husband hybrid ice icon idea identify idle ignore ill illegal illness image imitate immense immune impact impose improve impulse inch include income increase index indicate indoor industry infant inflict inform inhale inherit initial inject injury inmate inner innocent input inquiry insane insect inside inspire install intact interest into invest invite involve iron island isolate issue item ivory jacket jaguar jar jazz jealous jeans jelly jewel job join joke journey joy judge juice jump jungle junior junk just kangaroo keen keep ketchup key kick kid kidney kind kingdom kiss kit kitchen kite kitten kiwi knee knife knock know lab label labor ladder lady lake lamp language laptop large later latin laugh laundry lava law lawn lawsuit layer lazy leader leaf learn leave lecture left leg legal legend leisure lemon lend length lens leopard lesson letter level liar liberty library license life lift light like limb limit link lion liquid list little live lizard load loan lobster local lock logic lonely long loop lottery loud lounge love loyal lucky luggage lumber lunar lunch luxury lyrics machine mad magic magnet maid mail main major make mammal man manage mandate mango mansion manual maple marble march margin marine market marriage mask mass master match material math matrix matter maximum maze meadow mean measure meat mechanic medal media melody melt member memory mention menu mercy merge merit merry mesh message metal method middle midnight milk million mimic mind minimum minor minute miracle mirror misery miss mistake mix mixed mixture mobile model modify mom moment monitor monkey monster month moon moral more morning mosquito mother motion motor mountain mouse move movie much muffin mule multiply muscle museum mushroom music must mutual myself mystery myth naive name napkin narrow nasty nation nature near neck need negative neglect neither nephew nerve nest net network neutral never news next nice night noble noise nominee noodle normal north nose notable note nothing notice novel now nuclear number nurse nut oak obey object oblige obscure observe obtain obvious occur ocean october odor off offer office often oil okay old olive olympic omit once one onion online only open opera opinion oppose option orange orbit orchard order ordinary organ orient original orphan ostrich other outdoor outer output outside oval oven over own owner oxygen oyster ozone pact paddle page pair palace palm panda panel panic panther paper parade parent park parrot party pass patch path patient patrol pattern pause pave payment peace peanut pear peasant pelican pen penalty pencil people pepper perfect permit person pet phone photo phrase physical piano picnic picture piece pig pigeon pill pilot pink pioneer pipe pistol pitch pizza place planet plastic plate play please pledge pluck plug plunge poem poet point polar pole police pond pony pool popular portion position possible post potato pottery poverty powder power practice praise predict prefer prepare present pretty prevent price pride primary print priority prison private prize problem process produce profit program project promote proof property prosper protect proud provide public pudding pull pulp pulse pumpkin punch pupil puppy purchase purity purpose purse push put puzzle pyramid quality quantum quarter question quick quit quiz quote rabbit raccoon race rack radar radio rail rain raise rally ramp ranch random range rapid rare rate rather raven raw razor ready real reason rebel rebuild recall receive recipe record recycle reduce reflect reform refuse region regret regular reject relax release relief rely remain remember remind remove render renew rent reopen repair repeat replace report require rescue resemble resist resource response result retire retreat return reunion reveal review reward rhythm rib ribbon rice rich ride ridge rifle right rigid ring riot ripple risk ritual rival river road roast robot robust rocket romance roof rookie room rose rotate rough round route royal rubber rude rug rule run runway rural sad saddle sadness safe sail salad salmon salon salt salute same sample sand satisfy satoshi sauce sausage save say scale scan scare scatter scene scheme school science scissors scorpion scout scrap screen script scrub sea search season seat second secret section security seed seek segment select sell seminar senior sense sentence series service session settle setup seven shadow shaft shallow share shed shell sheriff shield shift shine ship shiver shock shoe shoot shop short shoulder shove shrimp shrug shuffle shy sibling sick side siege sight sign silent silk silly silver similar simple since sing siren sister situate six size skate sketch ski skill skin skirt skull slab slam sleep slender slice slide slight slim slogan slot slow slush small smart smile smoke smooth snack snake snap sniff snow soap soccer social sock soda soft solar soldier solid solution solve someone song soon sorry sort soul sound soup source south space spare spatial spawn speak special speed spell spend sphere spice spider spike spin spirit split spoil sponsor spoon sport spot spray spread spring spy square squeeze squirrel stable stadium staff stage stairs stamp stand start state stay steak steel stem step stereo stick still sting stock stomach stone stool story stove strategy street strike strong struggle student stuff stumble style subject submit subway success such sudden suffer sugar suggest suit summer sun sunny sunset super supply supreme sure surface surge surprise surround survey suspect sustain swallow swamp swap swarm swear sweet swift swim swing switch sword symbol symptom syrup system table tackle tag tail talent talk tank tape target task taste tattoo taxi teach team tell ten tenant tennis tent term test text thank that theme then theory there they thing this thought three thrive throw thumb thunder ticket tide tiger tilt timber time tiny tip tired tissue title toast tobacco today toddler toe together toilet token tomato tomorrow tone tongue tonight tool tooth top topic topple torch tornado tortoise toss total tourist toward tower town toy track trade traffic tragic train transfer trap trash travel tray treat tree trend trial tribe trick trigger trim trip trophy trouble truck true truly trumpet trust truth try tube tuition tumble tuna tunnel turkey turn turtle twelve twenty twice twin twist two type typical ugly umbrella unable unaware uncle uncover under undo unfair unfold unhappy uniform unique unit universe unknown unlock until unusual unveil update upgrade uphold upon upper upset urban urge usage use used useful useless usual utility vacant vacuum vague valid valley valve van vanish vapor various vast vault vehicle velvet vendor venture venue verb verify version very vessel veteran viable vibrant vicious victory video view village vintage violin virtual virus visa visit visual vital vivid vocal voice void volcano volume vote voyage wage wagon wait walk wall walnut want warfare warm warrior wash wasp waste water wave way wealth weapon wear weasel weather web wedding weekend weird welcome west wet whale what wheat wheel when where whip whisper wide width wife wild will win window wine wing wink winner winter wire wisdom wise wish witness wolf woman wonder wood wool word work world worry worth wrap wreck wrestle wrist write wrong yard year yellow you young youth zebra zero zone zoo".split(" "),
@@ -770,7 +903,7 @@ function formatSize(bytes) {
 generateBtn.addEventListener("click", async () => {
   const text = textInput.value;
   if (!text && !fileBuffer) {
-    progressText.textContent = "Please provide text or a file.";
+    progressText.textContent = t("noInput");
     return;
   }
 
@@ -791,7 +924,7 @@ generateBtn.addEventListener("click", async () => {
   const lang = document.querySelector('input[name="lang"]:checked').value;
   const iterations = getIterations();
   if (!iterations || iterations < 1) {
-    progressText.textContent = "Please enter a valid iteration count.";
+    progressText.textContent = t("badIter");
     return;
   }
   const entropyBits = wordCount === 12 ? 128 : 256;
@@ -801,7 +934,7 @@ generateBtn.addEventListener("click", async () => {
   generateBtn.classList.add("running");
   result.classList.remove("visible");
   const iterLabel = iterations >= 1000000 ? (iterations / 1000000) + "M" : iterations >= 1000 ? (iterations / 1000) + "K" : iterations;
-  progressText.textContent = `Deriving key (${iterLabel} iterations)...`;
+  progressText.textContent = t("deriving", { iter: iterLabel });
 
   // Use setTimeout to let UI update
   await new Promise(r => setTimeout(r, 50));
@@ -887,15 +1020,15 @@ generateBtn.addEventListener("click", async () => {
 copyMnemonic.addEventListener("click", () => {
   const words = [...mnemonicGrid.querySelectorAll(".word")].map(el => el.textContent);
   navigator.clipboard.writeText(words.join(" ")).then(() => {
-    copyMnemonic.textContent = "copied!";
-    setTimeout(() => copyMnemonic.textContent = "copy", 1500);
+    copyMnemonic.textContent = t("copied");
+    setTimeout(() => copyMnemonic.textContent = t("copy"), 1500);
   });
 });
 
 copyHex.addEventListener("click", () => {
   navigator.clipboard.writeText(hexDisplay.textContent).then(() => {
-    copyHex.textContent = "copied!";
-    setTimeout(() => copyHex.textContent = "copy", 1500);
+    copyHex.textContent = t("copied");
+    setTimeout(() => copyHex.textContent = t("copy"), 1500);
   });
 });
 

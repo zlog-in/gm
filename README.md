@@ -26,10 +26,16 @@ Same input, same iterations, same output — on any device, any browser, any tim
 
 ## Usage
 
-Open `index.html` in a browser. That's it.
+```bash
+git clone https://github.com/anthropics/gm.git
+cd gm
+open index.html        # macOS
+# or: xdg-open index.html   (Linux)
+# or: start index.html      (Windows)
+# or: just double-click index.html in your file manager
+```
 
-- No install, no build, no dependencies, no network.
-- Works offline. Disconnect your WiFi if you want.
+No install, no build, no dependencies, no network. Works offline — disconnect your WiFi if you want.
 
 ### Steps
 
@@ -96,6 +102,10 @@ gm/
 ## Browser Support
 
 Chrome 37+ / Firefox 34+ / Safari 11+ / Edge 37+ (any browser with Web Crypto API).
+
+## Disclaimer
+
+**This tool is experimental and provided as-is for research and educational purposes only.** It has not been independently audited. Do not use it to secure assets you cannot afford to lose. The authors assume no responsibility for any loss resulting from the use of this tool.
 
 ## License
 
