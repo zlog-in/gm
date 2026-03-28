@@ -536,36 +536,36 @@ textarea::placeholder {
 </style>
 </head>
 <body>
-<button class="ui-lang-toggle" id="uiLangToggle">中文</button>
+<button class="ui-lang-toggle" id="uiLangToggle">EN</button>
 
 <div class="container">
-  <h1 data-i18n="title">G M</h1>
-  <p class="subtitle" data-i18n="subtitle">Deterministic BIP39 Mnemonic from Your Data</p>
+  <h1 data-i18n="title">归墨</h1>
+  <p class="subtitle" data-i18n="subtitle">从你的记忆生成 BIP39 助记词</p>
   <p class="subtitle" style="margin-top: -2.5rem; margin-bottom: 3rem;"><a href="https://github.com/zlog-in/gm" style="color: #b5aa96; text-decoration: none; font-size: 0.72rem; border-bottom: 1px solid #d5cfc3;" target="_blank" rel="noopener">GitHub</a></p>
 
   <!-- Step 1: Input -->
   <div class="step">
-    <div class="step-label" data-i18n="inputMaterial">Input Material</div>
-    <textarea id="textInput" data-i18n-placeholder="textPlaceholder" placeholder="Write anything here, any language..."></textarea>
+    <div class="step-label" data-i18n="inputMaterial">输入素材</div>
+    <textarea id="textInput" data-i18n-placeholder="textPlaceholder" placeholder="在此输入任何文字，任何语言……"></textarea>
     <div style="height: 0.8rem"></div>
     <div class="file-drop" id="fileDrop">
       <input type="file" id="fileInput" />
       <div class="icon" style="font-style: normal">&#9651;</div>
-      <div class="text" data-i18n="fileDrop">Drop a file or click to select</div>
+      <div class="text" data-i18n="fileDrop">拖入文件或点击选择</div>
     </div>
     <div class="file-info" id="fileInfo" style="display:none">
       <span id="fileName"></span>
       <span id="fileSize"></span>
-      <span class="remove" id="fileRemove" data-i18n="fileRemove">&#10005; remove</span>
+      <span class="remove" id="fileRemove" data-i18n="fileRemove">✕ 移除</span>
     </div>
   </div>
 
   <!-- Step 2: Options -->
   <div class="step">
-    <div class="step-label" data-i18n="parameters">Parameters</div>
+    <div class="step-label" data-i18n="parameters">参数设置</div>
     <div class="options">
       <div class="option-group">
-        <label data-i18n="words">Words</label>
+        <label data-i18n="words">词数</label>
         <div class="radio-group">
           <input type="radio" name="wordCount" id="w12" value="12" checked>
           <label class="radio-btn" for="w12">12</label>
@@ -574,7 +574,7 @@ textarea::placeholder {
         </div>
       </div>
       <div class="option-group">
-        <label data-i18n="wordlistLang">Language</label>
+        <label data-i18n="wordlistLang">词表语言</label>
         <div class="radio-group">
           <input type="radio" name="lang" id="langEn" value="en" checked>
           <label class="radio-btn" for="langEn">English</label>
@@ -585,7 +585,7 @@ textarea::placeholder {
         </div>
       </div>
       <div class="option-group">
-        <label data-i18n="iterations">Iterations</label>
+        <label data-i18n="iterations">迭代轮数</label>
         <div class="iter-row">
           <div class="radio-group">
             <input type="radio" name="iterations" id="iter100k" value="100000">
@@ -599,16 +599,16 @@ textarea::placeholder {
             <input type="radio" name="iterations" id="iterCustom" value="custom">
             <label class="radio-btn" for="iterCustom">...</label>
           </div>
-          <input type="number" id="iterCustomInput" class="iter-custom-input" min="1" max="100000000" data-i18n-placeholder="customPlaceholder" placeholder="custom" style="display:none">
+          <input type="number" id="iterCustomInput" class="iter-custom-input" min="1" max="100000000" data-i18n-placeholder="customPlaceholder" placeholder="自定义" style="display:none">
         </div>
       </div>
     </div>
-    <div class="info-text" data-i18n="infoText">PBKDF2-SHA256 &middot; no salt</div>
+    <div class="info-text" data-i18n="infoText">PBKDF2-SHA256 · 无盐值</div>
   </div>
 
   <!-- Generate -->
   <div class="step">
-    <button class="generate-btn" id="generateBtn" data-i18n="generate">Generate Mnemonic</button>
+    <button class="generate-btn" id="generateBtn" data-i18n="generate">生成助记词</button>
     <div class="progress-text" id="progressText"></div>
   </div>
 
@@ -616,30 +616,28 @@ textarea::placeholder {
   <div class="result" id="result">
     <div class="result-section">
       <div class="result-label">
-        <span data-i18n="mnemonic">Mnemonic</span>
-        <button class="copy-btn" id="copyMnemonic" data-i18n="copy">copy</button>
+        <span data-i18n="mnemonic">助记词</span>
+        <button class="copy-btn" id="copyMnemonic" data-i18n="copy">复制</button>
       </div>
       <div class="mnemonic-grid" id="mnemonicGrid"></div>
     </div>
     <div class="result-section">
       <div class="result-label">
-        <span data-i18n="rawHex">Raw Entropy (hex)</span>
-        <button class="copy-btn" id="copyHex" data-i18n="copy">copy</button>
+        <span data-i18n="rawHex">原始熵 (hex)</span>
+        <button class="copy-btn" id="copyHex" data-i18n="copy">复制</button>
       </div>
       <div class="hex-display" id="hexDisplay"></div>
     </div>
-    <button class="clear-btn" id="clearBtn" data-i18n="clear">Clear Results</button>
+    <button class="clear-btn" id="clearBtn" data-i18n="clear">清除结果</button>
     <div class="warning" data-i18n-html="warning">
-      This tool runs entirely in your browser — no data is sent anywhere.<br>
-      The same input will always produce the same mnemonic.<br>
-      Keep your input material safe — anyone with it can regenerate your keys.
+      此工具完全在浏览器本地运行，不发送任何数据。<br>相同的输入永远产出相同的助记词。<br>请妥善保管你的输入素材——任何拥有它的人都可以重新生成你的密钥。
     </div>
   </div>
 
   <!-- Wordlist Reference -->
   <div class="wordlist-panel">
     <div class="wordlist-header" id="wordlistHeader">
-      <span class="label" data-i18n="wordlistRef">BIP39 Wordlist Reference</span>
+      <span class="label" data-i18n="wordlistRef">BIP39 词表参考</span>
       <span class="toggle">&#9654;</span>
     </div>
     <div class="wordlist-body" id="wordlistBody">
@@ -649,7 +647,7 @@ textarea::placeholder {
   </div>
 
   <div class="disclaimer" data-i18n-html="disclaimer">
-    <strong>Disclaimer</strong>: This tool is experimental and provided as-is for research and educational purposes only. It has not been independently audited. Do not use it to secure assets you cannot afford to lose. The authors assume no responsibility for any loss resulting from the use of this tool.
+    <strong>免责声明</strong>：本工具为实验性项目，仅供研究和学习用途，按原样提供，未经独立安全审计。请勿将其用于保护您无法承受损失的资产。作者不对因使用本工具而导致的任何损失承担责任。
   </div>
 </div>
 
@@ -712,7 +710,7 @@ const I18N = {
   }
 };
 
-let uiLang = "en";
+let uiLang = "zh";
 
 function applyI18N() {
   const t = I18N[uiLang];
@@ -839,8 +837,9 @@ document.querySelectorAll('input[name="lang"]').forEach(radio => {
   });
 });
 
-// Initial render if already open (won't be, but safe)
+// Initial render
 renderWordlist();
+applyI18N();
 
 // --- Iterations custom input ---
 const iterCustomRadio = document.getElementById("iterCustom");
